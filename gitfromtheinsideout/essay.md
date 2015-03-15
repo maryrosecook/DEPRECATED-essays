@@ -242,7 +242,7 @@ It is possible to recall a commit that is not pointed at by any ref.  The furthe
 ## Check out a commit
 
 ```bash
-$ git checkout hhh
+$ git checkout ae78f19
   You are in 'detached HEAD' state...
 ```
 
@@ -254,10 +254,10 @@ Second, it writes the file entries in the tree graph to the files of the working
 
 Third, it writes the file entries in the tree graph to the index.  This, too, results in no changes.  The index already has the same content as the `a2` commit.
 
-Fourth, the contents of `HEAD` to the hash of the `a2` commit:
+Fourth, the contents of `HEAD` is set to the hash of the `a2` commit:
 
 ```
-hhh
+ae78f19
 ```
 
 [graph showing head pointing directly at commit]
@@ -266,7 +266,7 @@ hhh
 $ printf '3' > data/number.txt
 $ git add data/number.txt
 $ git commit -m 'a3'
-  [master 45c0be2] a3
+  [master 05f9ae6] a3
 ```
 
 The user sets the content of `data/number.txt` to `3` and commits the change.  To get the parent of the `a3` commit, Git follows the detached `HEAD` directly to the previous `a2` commit, rather than going via a branch.  This means that the new commit is not on a branch.
@@ -764,6 +764,8 @@ todo
 - go through all commands, check they work, add their output exactly to bash sections
 - show current dir!
 - find a way to put file names on same line as top border of code samples
+- explain why must remake alpha and data each time (because hashes change)
+- explain ghost boxes when start using them in diagrams
 
 git graph:
 - show graphic that allows switching between history view and content view of object graph?
