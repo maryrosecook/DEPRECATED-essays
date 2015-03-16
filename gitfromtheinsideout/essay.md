@@ -380,7 +380,7 @@ Ten.  The history is a series of changes.  This means that, if the giver is a de
 $ printf '4' > data/number.txt
 $ git add data/number.txt
 $ git commit -m 'a4'
-  [master 45c0be2] a4
+  [master c6b955e] a4
 ```
 
 The user sets the content of `number.txt` to `4` and commits the change to `master`.
@@ -390,8 +390,8 @@ $ git checkout deputy
   Switched to branch 'deputy'
 $ printf 'b' > data/letter.txt
 $ git add data/letter.txt
-$ git commit -m 'b4'
-  [master 45c0be2] b4
+$ git commit -m 'b3'
+  [deputy d75b998] b3
 ```
 
 The user checks out `deputy`.  They set the content of `data/letter.txt` to `b` and commit the change to `deputy`.
@@ -407,7 +407,7 @@ Twelve.  The commit history can contain multiple lineages.  This means that, if 
 ***
 
 ```bash
-$ git merge master
+$ git merge master -m 'b4'
   Merge made by the 'recursive' strategy.
 ```
 
@@ -450,48 +450,48 @@ Fourth, the changes indicated by the entries in the diff are applied to the work
 Fifth, the updated index is committed:
 
 ```
-tree 140706a7ce6843548bfb6b3411c0a11cb135bc36
-parent hhh
-parent hhh
+tree 20294508aea3fb6f05fcc49adaecc2e6d60f7e7d
+parent d75b9983183df12a8e745318d0c31cc1782eaf2f
+parent c6b955e6d3d26248112b29176d47b4186a9a20c8
 author Mary Rose Cook <mary@maryrosecook.com> 1425596551 -0500
 committer Mary Rose Cook <mary@maryrosecook.com> 1425596551 -0500
 
-Merge branch 'master' into deputy
+b4
 ```
 
 Notice that the commit has two parents.
 
-Sixth, the current branch, `master`, is set to point at the new commit.
+Sixth, the current branch, `deputy`, is set to point at the new commit.
 
 ## Merge two commits in different lineages that both modify the same file
 
 ```bash
-$ printf '5.3' > data/number.txt
+$ printf '5' > data/number.txt
 $ git add data/number.txt
-$ git commit -m 'a5.3'
-  [master 45c0be2] a5.3
+$ git commit -m 'b5'
+  [deputy 15b9e42] b5
 ```
 
-The user sets the content of `data/number.txt` to `5.3` and commits the change to `master`.
+The user sets the content of `data/number.txt` to `5` and commits the change to `deputy`.
 
 ```bash
-$ git checkout `deputy`
-  Switched to branch 'deputy'
-$ printf '5.7' > data/number.txt
+$ git checkout master
+  Switched to branch 'master'
+$ printf '6' > data/number.txt
 $ git add data/number.txt
-$ git commit -m 'a5.7'
-  [master 45c0be2] a5.7
+$ git commit -m 'b6'
+  [master 6deded9] b6
 ```
 
-The user checks out `deputy`.  They set the content of `data/number.txt` to `5.7` and commit the change to `deputy`.
+The user checks out `master`.  They set the content of `data/number.txt` to `6` and commit the change to `master`.
 
 ```bash
-$ git merge master
+$ git merge deputy
   CONFLICT in data/number.txt
   Automatic merge failed; fix conflicts and then commit the result.
 ```
 
-The user merges `master` into `deputy`.  There is a conflict and the merge is paused.  The process for a conflicted merge follows the same first four steps as the process for an unconflicted merge: set `alpha/.git/MERGE_HEAD`, create a diff, update the index and update the working copy.  Because of the conflict, steps two, three and four have different outcomes.  Because of the conflict, the fifth commit step and sixth ref update step are never taken.  Let's go through the steps again and see what happened.
+The user merges `deputy` into `master`.  There is a conflict and the merge is paused.  The process for a conflicted merge follows the same first four steps as the process for an unconflicted merge: set `alpha/.git/MERGE_HEAD`, create a diff, update the index and update the working copy.  Because of the conflict, steps two, three and four have different outcomes.  Because of the conflict, the fifth commit step and sixth ref update step are never taken.  Let's go through the steps again and see what happened.
 
 First, Git writes the hash of the giver commit to a file at `alpha/.git/MERGE_HEAD`.  This is the same as before.
 
@@ -519,20 +519,20 @@ Fourth, the changes indicated by the entries in the diff are applied to the work
 
 ```
 <<<<<<< HEAD
-5.7
+6
 =======
-5.3
->>>>>>> master
+5
+>>>>>>> deputy
 ```
 
 The merge pauses here.
 
 ```bash
-$ printf '6' > data/number.txt
+$ printf '13' > data/number.txt
 $ git add data/number.txt
 ```
 
-The user edits `data/number.txt` to resolve the conflict and sets its content to `6`.  They add the file to the index.  Adding a conflicted file tells Git that the conflict is resolved.  Git removes the `data/number.txt` entries for stages `1`, `2` and `3` from the index and adds an entry for stage `0`.  The index now contains:
+The user resolves the conflict by setting the content of `data/number.txt` to `13`.  They add the file to the index.  Adding a conflicted file tells Git that the conflict is resolved.  Git removes the `data/number.txt` entries for stages `1`, `2` and `3` from the index and adds an entry for stage `0`.  The index now contains:
 
 ```
 0 data/letter.txt hhh
@@ -540,8 +540,8 @@ The user edits `data/number.txt` to resolve the conflict and sets its content to
 ```
 
 ```bash
-$ git commit -m `b6`
-  [master 45c0be2] b6
+$ git commit -m 'b13'
+  [master 28118a0] b13
 ```
 
 The user commits.  Git sees `alpha/.git/MERGE_HEAD` in the repo, which tells it that a merge is in progress.  It checks the index and finds there are no conflicts.  It creates a new commit to record the content of the resolved merge.  It deletes the file at `alpha/.git/MERGE_HEAD`.  This completes the merge.
@@ -562,8 +562,8 @@ First, `data/letter.txt` is deleted from the working copy.
 Second, the entry for `data/letter.txt` is deleted from the index.
 
 ```bash
-$ git commit -m '6'
-  [master 45c0be2] 6
+$ git commit -m '14'
+  [master 836b25c] 14
 ```
 
 The user commits.  As part of the commit, as always, Git builds a tree graph that represents the content of the index.  Because `data/letter.txt` is not in the index, it is not included in the tree graph.
@@ -571,13 +571,11 @@ The user commits.  As part of the commit, as always, Git builds a tree graph tha
 ## Copy a repository
 
 ```bash
-$ git checkout master
-  Switched to branch 'master'
 $ cd ..
 $ cp -r alpha bravo
 ```
 
-The users checks out `master`.  They make a copy of the entire `alpha/` repository to the `bravo/` directory.
+The user makes a copy of the entire `alpha/` repository to the `bravo/` directory.
 
 ## Link a repository ta another repository
 
@@ -599,13 +597,13 @@ These lines specify that there is a remote repository called `bravo` in the dire
 
 ```bash
 $ cd ../bravo
-$ printf '7' > data/number.txt
+$ printf '15' > data/number.txt
 $ git add data/number.txt
-$ git commit -m '7'
-  [master 45c0be2] 7
+$ git commit -m '15'
+  [master 6764cd8] 15
 ```
 
-The user goes into the `bravo` repository.  They set the content of `data/number.txt` to `7` and commit the change to `master` on `bravo`.
+The user goes into the `bravo` repository.  They set the content of `data/number.txt` to `15` and commit the change to `master` on `bravo`.
 
 ```bash
 $ cd ../alpha
@@ -617,15 +615,15 @@ $ git fetch bravo master
 
 The user goes into the `alpha` repository.  They fetch `master` from `bravo` into `alpha`.  This takes four steps.
 
-First, Git gets the hash of the commit that master is pointing to on `bravo`.  This is the hash of the `7` commit.
+First, Git gets the hash of the commit that master is pointing to on `bravo`.  This is the hash of the `15` commit.
 
-Second, a list is made of all the objects that the `7` commit depends on: the commit itself, the objects in its tree graph, the ancestor commits of the `7` commit and the objects in their tree graphs.  It copies all these objects to `alpha/.git/objects/`.
+Second, Git makes a list of all the objects that the `15` commit depends on: the commit itself, the objects in its tree graph, the ancestor commits of the `15` commit and the objects in their tree graphs.  It copies all the objects in this list that `alpha` does not already have to `alpha/.git/objects/`.
 
-Third, the contents of the concrete ref file at `alpha/.git/refs/remotes/bravo/master` is set to the hash of the `7` commit.
+Third, the contents of the concrete ref file at `alpha/.git/refs/remotes/bravo/master` is set to the hash of the `15` commit.
 
 ***
 
-[graph showing bravo/master pointing at `7` commit (somehow show the fact that the commit is not part of the local history]
+[graph showing bravo/master pointing at `15` commit (somehow show the fact that the commit is not part of the local history]
 
 Fifteen.  Objects can be copied.  This means that parts of the content and history of a project can be copied from one repository to another.
 
@@ -639,17 +637,17 @@ Fourth, the contents of `alpha/.git/FETCH_HEAD` is set to:
 hhh	branch 'master' of ../bravo
 ```
 
-This indicates that the most recent fetch command fetched the `7` commit of `master` on `bravo`.
+This indicates that the most recent fetch command fetched the `15` commit of `master` on `bravo`.
 
 ## Merge FETCH_HEAD
 
 ```bash
 $ git merge FETCH_HEAD
-  Updating ac79079..dd8807b
+  Updating 836b25c..6764cd8
   Fast-forward
 ```
 
-The user merges `FETCH_HEAD`.  `FETCH_HEAD` is just another ref.  It resolves to the `7` commit, the giver.  `HEAD` points at the `6` commit, the receiver.  Git does a fast-forward merge and points `master` at the `7` commit.
+The user merges `FETCH_HEAD`.  `FETCH_HEAD` is just another ref.  It resolves to the `15` commit, the giver.  `HEAD` points at the `14` commit, the receiver.  Git does a fast-forward merge and points `master` at the `15` commit.
 
 ## Pull a branch from a remote
 
@@ -663,7 +661,7 @@ The user pulls `master` from `bravo` into `alpha`.  Pulling is shorthand for fet
 ## Clone a repository
 
 ```bash
-$ cd ../
+$ cd ..
 $ git clone alpha charlie
   Cloning into 'charlie'
 ```
@@ -675,14 +673,14 @@ Git creates a new directory called `charlie`.  After that, it inits `charlie` as
 ## Push a branch to a checked out branch on a remote
 
 ```bash
-$ cd ../alpha
-$ printf '8' > data/number.txt
+$ cd alpha
+$ printf '16' > data/number.txt
 $ git add data/number.txt
-$ git commit -m '8'
-  [master 45c0be2] 8
+$ git commit -m '16'
+  [master 8b35db5] 16
 ```
 
-The user goes back into the `alpha` repository.  They set the content of `data/number.txt` to `8` and commit the change to `master` on `alpha`.
+The user goes back into the `alpha` repository.  They set the content of `data/number.txt` to `16` and commit the change to `master` on `alpha`.
 
 ```bash
 $ git remote add charlie ../charlie
@@ -691,7 +689,7 @@ $ git remote add charlie ../charlie
 They set up `charlie` as a remote repository on `alpha`.
 
 ```bash
-$ git push origin master
+$ git push charlie master
   Writing objects: 100%
   remote error: refusing to update checked out branch: refs/heads/master
                 because it will make the index and work tree inconsistent
@@ -699,25 +697,24 @@ $ git push origin master
 
 They push `master` to `charlie`.
 
-All the objects required for the `8` commit on the `master` branch are copied to `charlie`.
+All the objects required for the `16` commit on the `master` branch are copied to `charlie`.
 
 At this point, the push process stops.  Git, as ever, tells the user what went wrong.  It refuses to push to a branch that is checked out on the remote.  This makes sense.  A push will update the current commit and index of the remote.  If someone is editing the working copy on the remote, this will be confusing.
 
-At this point, the user could make a new branch and push that branch to `charlie`.  But, really, they want `charlie` be a repository they can push to however they want.  They want `charlie` to be a central repository that they can push to and pull from, but that no one commits to directly.  They want something like a GitHub remote.  They want a bare repository.
+At this point, the user could make a new branch and push that branch to `charlie`.  But, really, they want a repository that they can push to whenever they want.  They want a central repository that they can push to and pull from, but that no one commits to directly.  They want something like a GitHub remote.  They want a bare repository.
 
 ## Clone a bare repository
 
 ```bash
 $ cd ..
-$ rm -rf charlie
-$ git clone alpha charlie --bare
-  Cloning into bare repository 'charlie'
+$ git clone alpha delta --bare
+  Cloning into bare repository 'delta'
 ```
 
-The user deletes the `charlie` repository.  They clone `charlie` as a bare repository.  This is an ordinary clone with two differences.  The `config` file indicates the repository is bare.  And the contents of the `.git` directory are in the top of the repository:
+The user clones `delta` as a bare repository.  This is an ordinary clone with two differences.  The `config` file indicates the repository is bare.  And the contents of the `.git` directory are in the top of the repository:
 
 ```
-charlie
+delta
 ├── HEAD
 ├── config
 ├── objects
@@ -727,29 +724,30 @@ charlie
 ## Push a branch to a bare repository
 
 ```bash
-$ cd ../alpha
-$ printf '9' > data/number.txt
+$ cd alpha
+$ git remote add delta ../delta
+$ printf '17' > data/number.txt
 $ git add data/number.txt
-$ git commit -m '9'
-  [master 45c0be2] 9
+$ git commit -m '17'
+  [master 02d1bb2] 17
 ```
 
-The user goes back into the `alpha` repository.  They set the content of `data/number.txt` to `9` and commit the change to `master` on `alpha`.
+The user goes back into the `alpha` repository.  They set up `delta` as a remote repository on `alpha`.  They set the content of `data/number.txt` to `17` and commit the change to `master` on `alpha`.
 
 ```bash
-$ git push charlie master
+$ git push delta master
   Writing objects: 100%
-  To ../charlie
-    dd8807b..ec904de  master -> master
+  To ../delta
+    8b35db5..02d1bb2 master -> master
 ```
 
-They push `master` to `charlie`.  Pushing has three steps.
+They push `master` to `delta`.  Pushing has three steps.
 
-First, all the objects required for the `8` commit on the `master` branch are copied from `alpha/.git/objects/` to `charlie/.git/objects/`.
+First, all the objects required for the `8` commit on the `master` branch are copied from `alpha/.git/objects/` to `delta/.git/objects/`.
 
-Second, `refs/heads/master` is updated on `charlie` to point at the `9` commit.
+Second, `refs/heads/master` is updated on `delta` to point at the `17` commit.
 
-Third, `.git/refs/heads/remotes/charlie/master` is updated to point at the `9` commit.  `alpha` has to update its own record of the state of `charlie`.
+Third, `.git/refs/heads/remotes/delta/master` is updated to point at the `17` commit.  `alpha` has to update its own record of the state of `delta`.
 
 ## Summary
 
@@ -766,6 +764,8 @@ todo
 - find a way to put file names on same line as top border of code samples
 - explain why must remake alpha and data each time (because hashes change)
 - explain ghost boxes when start using them in diagrams
+- go back over diagram and do bits showing index and wc as part of graph (hopefully only need to do for first two commits)
+- do diagram that shows commit, head, master etc vs their locations in repo - maybe after 15 commit cause then have FETCH_HEAD and a remote ref
 
 git graph:
 - show graphic that allows switching between history view and content view of object graph?
