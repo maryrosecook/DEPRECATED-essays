@@ -61,13 +61,13 @@ The user runs `git add` on the `data/letter.txt` file.  This has two effects.
 
 First, it creates a new blob file in the directory at `alpha/.git/objects/`.
 
-This file contains the compressed contents of the `data/letter.txt` file.
+This file contains the compressed content of the `data/letter.txt` file.
 
-The name of this file is derived by hashing the file's contents.  Hashing a piece of text means running a program on it that turns it into a smaller* piece of text that uniquely* identifies the original.  For example, Git hashes `a` to `5e40c0877058c504203932e5136051cf3cd3519b`.  This hash is a short, unique identifier for the current content of `number.txt`.  The first two characters are used as the name of a directory inside `alpha/.git/objects/`: `5e`.  The rest of the hash is used as the name of the file that holds the contents of added file: `40c0877058c504203932e5136051cf3cd3519b`*.
+The name of this file is derived by hashing the file's content.  Hashing a piece of text means running a program on it that turns it into a smaller* piece of text that uniquely* identifies the original.  For example, Git hashes `a` to `5e40c0877058c504203932e5136051cf3cd3519b`.  This hash is a short, unique identifier for the current content of `number.txt`.  The first two characters are used as the name of a directory inside `alpha/.git/objects/`: `5e`.  The rest of the hash is used as the name of the file that holds the content of added file: `40c0877058c504203932e5136051cf3cd3519b`*.
 
-Notice how just adding a file to Git saves its content to the objects directory.  If the user were to delete the `data/letter.txt` file the working copy, its contents would still be safe inside Git.
+Notice how just adding a file to Git saves its content to the objects directory.  If the user were to delete the `data/letter.txt` file the working copy, its content would still be safe inside Git.
 
-Second, `git add` adds the file to the index.  The index is a list that contains every file that Git has been told to keep track of.  It is just a file that lives at `alpha/.git/index`. Each line of the file maps a tracked file to a hash of its contents at the moment it was added.
+Second, `git add` adds the file to the index.  The index is a list that contains every file that Git has been told to keep track of.  It is just a file that lives at `alpha/.git/index`. Each line of the file maps a tracked file to a hash of its content at the moment it was added.
 
 ```
 data/letter.txt 5e40c0877058c504203932e5136051cf3cd3519b
@@ -90,7 +90,7 @@ alpha
 ~/alpha $ git add data
 ```
 
-The user adds the file to Git.  This creates a blob file that contains the content of `data/number.txt`.  And it adds another index entry that maps the `data/number.txt` file to a hash of its contents.
+The user adds the file to Git.  This creates a blob file that contains the content of `data/number.txt`.  And it adds another index entry that maps the `data/number.txt` file to a hash of its content.
 
 ```
 data/letter.txt 5e40c0877058c504203932e5136051cf3cd3519b
@@ -217,24 +217,24 @@ The user commits.  The steps for the commit are the same as before.
 
 First, a new tree graph is created to represent the content of the index.
 
-A new tree object is created to represent the `data` directory.  This must be created because the hash of the contents of the `data/number.txt` file has changed.
+A new tree object is created to represent the `data` directory.  This must be created because the hash of the content of the `data/number.txt` file has changed.
 
 ```
-100664 blob hhh letter.txt
-100664 blob hhh number.txt
+100664 blob 2e65efe2a145dda7ee51d1741299f848e5bf752e letter.txt
+100664 blob d8263ee9860594d2806b0dfd1bfd17528b0ba2a4 number.txt
 ```
 
 A new tree object is created to represent the `alpha` directory.  This must be created because the hash of the `data` tree object has changed.
 
 ```
-040000 tree hhh data
+040000 tree 40b0318811470aaacc577485777d7a6780e51f0b data
 ```
 
 Second, a new commit object is created that points at the new tree object.
 
 ```
-tree hhh
-parent hhh
+tree ce72afb5ff229a39f6cce47b00d1b0ed60fe3556
+parent 30ec3334aaa3954ef44fb6b68cfbf1a225c3d5af
 author Mary Rose Cook <mary@maryrosecook.com> 1424813101 -0500
 committer Mary Rose Cook <mary@maryrosecook.com> 1424813101 -0500
 
@@ -243,7 +243,7 @@ a2
 
 The second line of the commit object points at the commit's parent: `a1`.  To find the parent commit, Git went to `HEAD`, followed it to `master` and found the commit hash of `a1`.
 
-Third, just like for the previous commit, the contents of the `master` branch file is set to the hash of the new commit.
+Third, just like for the previous commit, the content of the `master` branch file is set to the hash of the new commit.
 
 file://images/7-a2wcandindexcurrentcommitnumbersetto2.png
 
@@ -288,13 +288,13 @@ Second, it writes the file entries in the tree graph to the working copy.  This 
 
 Third, Git writes the file entries in the tree graph to the index.  This, too, results in no changes.  The index already has the same content as the `a2` commit.
 
-Fourth, the contents of `HEAD` is set to the hash of the `a2` commit:
+Fourth, the content of `HEAD` is set to the hash of the `a2` commit:
 
 ```
 37888c274ecb894b656829d55e88cd086c9b2f72
 ```
 
-Setting the contents of `HEAD` to a hash puts the repository in the detached `HEAD` state.  Notice that `HEAD` points directly at the `a2` commit in the graph below.
+Setting the content of `HEAD` to a hash puts the repository in the detached `HEAD` state.  Notice that `HEAD` points directly at the `a2` commit in the graph below.
 
 file://images/9-a2detachedhead.png
 
@@ -346,7 +346,7 @@ Third, Git writes the file entries in the tree graph to the index.  The index be
 data/number.txt d8263ee9860594d2806b0dfd1bfd17528b0ba2a4
 ```
 
-Fourth, Git points `HEAD` at `master` by changing its contents from a hash to:
+Fourth, Git points `HEAD` at `master` by changing its content from a hash to:
 
 ```
 ref: refs/heads/master
@@ -376,7 +376,7 @@ The user accidentally sets the content of `data/number.txt` to `789`.  They try 
           Switched to branch 'deputy'
 ```
 
-The user notices that they accidentally edited `data/number.txt` and sets the contents back to `2`.  They check out `deputy` successfully.
+The user notices that they accidentally edited `data/number.txt` and sets the content back to `2`.  They check out `deputy` successfully.
 
 file://images/13-a3ondeputy.png
 
@@ -688,12 +688,12 @@ First, Git gets the hash of the commit that master is pointing at on `bravo`.  T
 
 Second, Git makes a list of all the objects that the `14` commit depends on: the commit itself, the objects in its tree graph, the ancestor commits of the `14` commit and the objects in their tree graphs.  It copies all the objects that are in this list but that `alpha` does not have to `alpha/.git/objects/`.
 
-Third, the contents of the concrete ref file at `alpha/.git/refs/remotes/bravo/master` is set to the hash of the `14` commit.
+Third, the content of the concrete ref file at `alpha/.git/refs/remotes/bravo/master` is set to the hash of the `14` commit.
 
-Fourth, the contents of `alpha/.git/FETCH_HEAD` is set to:
+Fourth, the content of `alpha/.git/FETCH_HEAD` is set to:
 
 ```
-hhh	branch 'master' of ../bravo
+132c6a5ba1bb9e0d89c45dc50ba4553f5edd19dc branch 'master' of ../bravo
 ```
 
 This indicates that the most recent fetch command fetched the `14` commit of `master` from `bravo`.
@@ -832,18 +832,11 @@ file://images/31-16pushedtodelta.png
 
 Git is built on a graph.  Almost every Git command manipulates this graph.  To understand Git deeply, focus on the properties of this graph, not workflows or commands.
 
-To learn more about Git, investigate the `.git` directory.  It's not scary. Look inside.  Change the contents of files and see what happens.  Create a commit by hand.  Try and see how badly you can mess up a repo.  Then repair it.
+To learn more about Git, investigate the `.git` directory.  It's not scary. Look inside.  Change the content of files and see what happens.  Create a commit by hand.  Try and see how badly you can mess up a repo.  Then repair it.
 
 --------------
 
 
 todo
 - add captions it images
-- go through all commands, check they work
-- find a way to put file names on same line as top border of code samples
-- explain ghost boxes when start using them in diagrams
-- do diagram that shows commit, head, master etc vs their locations in repo - maybe after 14 commit cause then have FETCH_HEAD and a remote ref
-- delete all hhh
-- remove all references to 'repo'
 - put dashes in image filenames
-- content vs contents
