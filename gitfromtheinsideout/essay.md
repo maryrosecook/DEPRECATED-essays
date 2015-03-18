@@ -1,8 +1,8 @@
 # Git from the inside out
 
-This essay shows you how Git works.  It focuses on the graph that underpins Git and how the properties of this graph dictate the behaviours of Git.  This focus on fundamentals lets you build your mental model on the truth, rather than on hypotheses constructed from evidence gathered while experimenting with the API.  This truer model gives you a better understanding of what Git has done, what it is doing and what it will do.
+This essay shows you how Git works.  It focuses on the graph that underpins Git and how the properties of this graph dictate the behaviors of Git.  This focus on fundamentals lets you build your mental model on the truth, rather than on hypotheses constructed from evidence gathered while experimenting with the API.  This truer model gives you a better understanding of what Git has done, what it is doing and what it will do.
 
-The text is structured as a series of Git commands run on a single project.  At intervals, there are observations about the graph data structure that Git is built on.  These observations illustrate a property of the graph and the behaviour that this property produces.
+The text is structured as a series of Git commands run on a single project.  At intervals, there are observations about the graph data structure that Git is built on.  These observations illustrate a property of the graph and the behavior that this property produces.
 
 It is assumed that you understand Git well enough to use it to version control your projects.
 
@@ -125,7 +125,7 @@ Blobs are stored by `git add`.  They represent the content of files.
 
 Trees are stored when a commit is made.  A tree represents a directory in the working copy.  It has one line for each item in the directory.  An item might be a file or another directory.  Each line records the four things required to reproduce the item in the project.  The item's permissions.  The type of object (blob or tree) that represents the item.  The hash of the object.  The name of the item.
 
-Below is the tree object that records the state of the `data` directory for the current commit.  It has entries for the `number.txt` and `letter.txt` files.  Notice that the entries use hashes to point to the blob objects that represent their content.
+Below is the tree object that records the state of the `data` directory for the current commit.  It has entries for the `number.txt` and `letter.txt` files.  Notice that the entries use hashes to point at the blob objects that represent their content.
 
 ```
 100664 blob 5e40c0877058c504203932e5136051cf3cd3519b letter.txt
@@ -162,7 +162,7 @@ The Git graph now looks like this:
 
 file://images/2-a1commit.png
 
-### Update the commit the current branch points to
+### Update the commit the current branch points at
 
 Finally, the commit command points the current branch at the new commit object.
 
@@ -182,11 +182,11 @@ Here are `HEAD` and `master` on the git graph:
 
 file://images/3-a1commitwithrefs.png
 
-`HEAD` still points at `master`.  But `master` now exists and points to the new commit object.
+`HEAD` still points at `master`.  But `master` now exists and points at the new commit object.
 
 `HEAD` and `master` are both refs.  A ref is a label used by Git or the user to identify a specific commit.  All refs are simply text files on disk.  The `master` ref is represented by a file called `master`.  It contains the hash of the commit it points at.
 
-Graph property: it has three "current" versions.  Git behaviour: changes can be made easily, then grouped into a commit.  The first current version is the working copy.  This represents the moment by moment changes that the user makes to their content.  It has no history, but is the most current version.  The second current version is the index.  This, too, has no history.  But it is a subset of the working copy changes.  It is the place where the user gathers the changes that comprise a commit.  The third current version is the current commit.  This represents a set of changes made to the working copy that are meaningful enough to the user that they can be labelled with a commit message.
+Graph property: it has three "current" versions.  Git behavior: changes can be made easily, then grouped into a commit.  The first current version is the working copy.  This represents the moment by moment changes that the user makes to their content.  It has no history, but is the most current version.  The second current version is the index.  This, too, has no history.  But it is a subset of the working copy changes.  It is the place where the user gathers the changes that comprise a commit.  The third current version is the current commit.  This represents a set of changes made to the working copy that are meaningful enough to the user that they can be labelled with a commit message.
 
 file://images/4-a1withindexwcnodes.png
 
@@ -251,19 +251,19 @@ Here is the Git graph without the working copy and index:
 
 file://images/8-a2.png
 
-Graph property: content is stored as a tree of objects.  Git's behaviour: only diffs are stored in the objects database.  Look at the graph above.  The `a2` commit reuses the `a` blob that was made before the `a1` commit.  Similarly, if a whole directory doesn't change from commit to commit, its tree and all the blobs and trees below it can be reused.  Generally, there are few content changes from commit to commit.  This means that Git can store large commit histories in a small amount of space.
+Graph property: content is stored as a tree of objects.  Git's behavior: only diffs are stored in the objects database.  Look at the graph above.  The `a2` commit reuses the `a` blob that was made before the `a1` commit.  Similarly, if a whole directory doesn't change from commit to commit, its tree and all the blobs and trees below it can be reused.  Generally, there are few content changes from commit to commit.  This means that Git can store large commit histories in a small amount of space.
 
-Graph property: each commit has a parent.  Git behaviour: a repository stores the history of a project.  To see the history preceding a commit, move from parent to parent, all the way back to the first commit.
+Graph property: each commit has a parent.  Git behavior: a repository stores the history of a project.  To see the history preceding a commit, move from parent to parent, all the way back to the first commit.
 
-Graph property: the nodes in the graph are all text files.  Git behaviour: the content in the nodes can be easily retrieved, edited, converted and explored with programs other than Git.
+Graph property: the nodes in the graph are all text files.  Git behavior: the content in the nodes can be easily retrieved, edited, converted and explored with programs other than Git.
 
-Graph property: refs are entry points to one part of the commit history or another.  Git behaviour: commits can be given meaningful names.  The user uses concrete refs like `fix-for-bug-376` to organise their work into lineages that are meaningful to their project.  Symbolic refs like `HEAD`, `MERGE_HEAD` and `FETCH_HEAD` identify points in the commit history that are meaningful to Git.  These support commands that can manipulate the history: committing, merging, fetching.
+Graph property: refs are entry points to one part of the commit history or another.  Git behavior: commits can be given meaningful names.  The user uses concrete refs like `fix-for-bug-376` to organise their work into lineages that are meaningful to their project.  Symbolic refs like `HEAD`, `MERGE_HEAD` and `FETCH_HEAD` identify points in the commit history that are meaningful to Git.  These support commands that can manipulate the history: committing, merging, fetching.
 
-Graph property: the nodes in the `objects/` directory are immutable.  Git behaviour: content can be edited, not deleted.  Every piece of content ever added and every commit ever made is somewhere in the `objects` directory*[does garbage collect chuck out stuff?].
+Graph property: the nodes in the `objects/` directory are immutable.  Git behavior: content can be edited, not deleted.  Every piece of content ever added and every commit ever made is somewhere in the `objects` directory*[does garbage collect chuck out stuff?].
 
-Graph property: refs are mutable.  Git behaviour: the meaning of a ref can change.  Though the commit that `master` points at now might be the best version of a project, soon enough, it will be superceded be a newer and better commit.
+Graph property: refs are mutable.  Git behavior: the meaning of a ref can change.  Though the commit that `master` points at now might be the best version of a project, soon enough, it will be superceded be a newer and better commit.
 
-Graph property: refs and the working copy are readily available, but unreferenced commits are not. Git behaviour: recent history is easier to recall, but more changeable.  Or: Git has a fading memory that must be jogged with increasingly vicious prods.
+Graph property: refs and the working copy are readily available, but unreferenced commits are not. Git behavior: recent history is easier to recall, but more changeable.  Or: Git has a fading memory that must be jogged with increasingly vicious prods.
 
 The working copy is the easiest point in history to recall because it is in the root of the repository.  Recalling it doesn't even require a Git command.  It is also the least permanent point in history.  The user can make a dozen versions of a file, but, unless they are added, Git won't record any of them.
 
@@ -307,7 +307,7 @@ file://images/9-a2detachedhead.png
 
 The user sets the content of `data/number.txt` to `3` and commits the change.  To get the parent of the `a3` commit, Git follows the detached `HEAD` directly to the hash of the previous `a2` commit, rather than going via a branch.
 
-Git updates `HEAD` to point directly at the hash of the new `a3` commit.  This means that the repository is still in the detached `HEAD` state.  Because no commit points to either `a3` or one of its descendents, it is not on a branch.  This means it is easy to lose.
+Git updates `HEAD` to point directly at the hash of the new `a3` commit.  This means that the repository is still in the detached `HEAD` state.  Because no commit points at either `a3` or one of its descendents, it is not on a branch.  This means it is easy to lose.
 
 Here is the Git graph after the `a3` commit.  Note that, from now on, trees and blobs will mostly be omitted from the graph diagrams.
 
@@ -321,7 +321,7 @@ file://images/10-a3detachedhead.png
 
 The user creates a new branch called `deputy`.  This just creates a new file at `alpha/.git/refs/heads/deputy` that contains the hash that `HEAD` is pointing at.  That is, the hash of the `a3` commit.
 
-Graph property: refs, like `deputy`, are just files.  Git behaviour: it is computationally cheap to create and modify a file.  This is why Git branches are considered lightweight.
+Graph property: refs, like `deputy`, are just files.  Git behavior: it is computationally cheap to create and modify a file.  This is why Git branches are considered lightweight.
 
 The creation of the `deputy` branch puts the new `a3` commit safely on a branch.  `HEAD` still points directly at a commit, so it is still detached.
 
@@ -357,7 +357,7 @@ file://images/12-a3headandmasterona2.png
 ## Check out a branch that is incompatible with the working copy
 
 ```bash
-~/alpha $ printf 789' > data/number.txt
+~/alpha $ printf '789' > data/number.txt
 ~/alpha $ git checkout deputy
           Your changes to these files would be overwritten
           by checkout:
@@ -389,7 +389,7 @@ file://images/13-a3ondeputy.png
 
 The user merges `master` into `deputy`.  Merging two branches means merging two commits.  The first commit is the one that `master` points at: the giver.  The second commit is the one that `deputy` points at: the receiver.  For this merge, Git does nothing, reporting it is `Already up-to-date.`.
 
-Graph property: the series of commits in the graph are interpreted as a series of changes made to the content of the repository.  Git behaviour: if the giver commit is an ancestor of the receiver commit, Git will do nothing.  Those changes have already been incorporated.
+Graph property: the series of commits in the graph are interpreted as a series of changes made to the content of the repository.  Git behavior: if the giver commit is an ancestor of the receiver commit, Git will do nothing.  Those changes have already been incorporated.
 
 ## Merge a descendent
 
@@ -413,7 +413,7 @@ It gets `a3`, the giver commit, and gets the tree graph that it points at.  It w
 
 file://images/15-a3onmaster.png
 
-Graph property: the series of commits in the graph are interpreted as a series of changes made to the content of the repository.  Git behaviour: in a merge, if the giver is a descendent of the receiver, history is not changed.  There is already a sequence of commits that describe the change to make: the sequence of commits between the receiver and the giver.  But, though the Git history doesn't change, the Git graph does change.  The concrete ref that `HEAD` points at is pointed at the giver commit.
+Graph property: the series of commits in the graph are interpreted as a series of changes made to the content of the repository.  Git behavior: in a merge, if the giver is a descendent of the receiver, history is not changed.  There is already a sequence of commits that describe the change to make: the sequence of commits between the receiver and the giver.  But, though the Git history doesn't change, the Git graph does change.  The concrete ref that `HEAD` points at is pointed at the giver commit.
 
 ## Merge a commit from a different lineage
 
@@ -439,9 +439,9 @@ The user checks out `deputy`.  They set the content of `data/letter.txt` to `b` 
 
 file://images/16-a4b3ondeputy.png
 
-Graph property: commits can share parents.  Git behaviour: new lineages can be created in the commit history.
+Graph property: commits can share parents.  Git behavior: new lineages can be created in the commit history.
 
-Graph property: commits can have multiple parents.  Git behaviour: separate lineages can be joined by a commit with two parents: a merge commit.
+Graph property: commits can have multiple parents.  Git behavior: separate lineages can be joined by a commit with two parents: a merge commit.
 
 ```bash
 ~/alpha $ git merge master -m 'b4'
@@ -458,9 +458,9 @@ Second, Git finds the base commit: the most recent common ancestor of the receiv
 
 file://images/17-a4b3ondeputyshowingbase.png
 
-Graph property: commits have parents.  Git behaviour: it is possible to find the point at which two lineages diverged.  Git traces backwards from `b3` to find all its ancestors and backwards from `a4` to find all its ancestors.  It finds the most recent ancestor shared by both lineages.  This is the base commit.
+Graph property: commits have parents.  Git behavior: it is possible to find the point at which two lineages diverged.  Git traces backwards from `b3` to find all its ancestors and backwards from `a4` to find all its ancestors.  It finds the most recent ancestor shared by both lineages.  This is the base commit.
 
-Third, Git generates the indices for the receiver, giver and base commits.
+Third, Git generates the indices for the base, receiver and giver commits.
 
 Fourth, Git generates a diff that contains the changes required to go from the content of the receiver commit to the content of the giver commit.  This diff is a list of file paths that point to a change: add, remove, modify or conflict.
 
@@ -470,7 +470,7 @@ The first is for `data/letter.txt`.  The content of this file is `a` in the base
 
 The second entry in the diff is for `data/number.txt`.  In this case, the content is the same in the base and receiver, and different in the giver.  This means that the diff entry for `data/letter.txt` is also a modification.
 
-Graph property: it is possible to find the base commit of a merge.  Git behaviour: if a file has changed from the base in just the receiver or giver, Git can automatically resolve the merge of that file.  This means less work for the user.
+Graph property: it is possible to find the base commit of a merge.  Git behavior: if a file has changed from the base in just the receiver or giver, Git can automatically resolve the merge of that file.  This means less work for the user.
 
 Fifth, the changes indicated by the entries in the diff are applied to the index.  This means that the entry for `data/letter.txt` is pointed at the `b` blob and the entry for `data/number.txt` is pointed at the `4` blob.
 
@@ -490,7 +490,7 @@ b4
 
 Notice that the commit has two parents.
 
-Eighth, the current branch, `deputy`, is set to point at the new commit.
+Eighth, Git points the current branch, `deputy`, at the new commit.
 
 file://images/18-b4ondeputy.png
 
@@ -516,6 +516,8 @@ The user sets the content of `data/number.txt` to `5` and commits the change to 
 
 The user checks out `master`.  They set the content of `data/number.txt` to `6` and commit the change to `master`.
 
+file://images/19-b6onmaster.png
+
 ```bash
 ~/alpha $ git merge deputy
           CONFLICT in data/number.txt
@@ -523,31 +525,39 @@ The user checks out `master`.  They set the content of `data/number.txt` to `6` 
           commit the result.
 ```
 
-The user merges `deputy` into `master`.  There is a conflict and the merge is paused.  The process for a conflicted merge follows the same first four steps as the process for an unconflicted merge: set `alpha/.git/MERGE_HEAD`, create a diff, update the index and update the working copy.  Because of the conflict, steps two, three and four have different outcomes.  Because of the conflict, the fifth commit step and sixth ref update step are never taken.  Let's go through the steps again and see what happened.
+The user merges `deputy` into `master`.  There is a conflict and the merge is paused.  The process for a conflicted merge follows the same first six steps as the process for an unconflicted merge: set `alpha/.git/MERGE_HEAD`, find the base commit, generate the indices of the base, receiver and giver commits, create a diff, update the index and update the working copy.  Because of the conflict, steps four, five and six have different outcomes.  Because of the conflict, the seventh commit step and eighth ref update step are never taken.  Let's go through the steps again and see what happened.
 
-First, Git writes the hash of the giver commit to a file at `alpha/.git/MERGE_HEAD`.  This is the same as before.
+First, Git writes the hash of the giver commit to a file at `alpha/.git/MERGE_HEAD`.
 
-Second, Git creates a diff that contains the changes required to go from the receiver commit to the giver commit.  In this case, the diff contains only one entry: `data/number.txt`.  Because the content for `data/number.txt` is different in the receiver, giver and base, the entry is a conflict.
+file://images/20-b6onmasterwithfetchhead.png
 
-Third, the changes indicated by the entries in the diff are applied to the index.  Entries in the index are uniquely identified by a combination of their file path and stage.  The entry for an unconflicted file has a stage of `0`.  Before this merge, the index looked like this, where `0` is the stage:
+Second, Git finds the base commit.
+
+Third, Git generates the indices for the base, receiver and giver commits.
+
+Those steps are the same as before.
+
+Fourth, Git creates a diff that contains the changes required to go from the receiver commit to the giver commit.  In this case, the diff contains only one entry: `data/number.txt`.  Because the content for `data/number.txt` is different in the receiver, giver and base, the entry is marked as a conflict.
+
+Fifth, the changes indicated by the entries in the diff are applied to the index.  Entries in the index are uniquely identified by a combination of their file path and stage.  The entry for an unconflicted file has a stage of `0`.  Before this merge, the index looked like this, where `0` is the stage:
 
 ```
-0 data/letter.txt hhh
-0 data/number.txt hhh
+0 data/letter.txt 63d8dbd40c23542e740659a7168a0ce3138ea748
+0 data/number.txt 62f9457511f879886bb7728c986fe10b0ece6bcb
 ```
 
-After the diff is written to the index, it looks like this:
+After the merge diff is written to the index, the index looks like this:
 
 ```
-0 data/letter.txt hhh
-1 data/number.txt hhh [hash for base]
-2 data/number.txt hhh [hash for receiver]
-3 data/number.txt hhh [hash for giver]
+0 data/letter.txt 63d8dbd40c23542e740659a7168a0ce3138ea748
+1 data/number.txt bf0d87ab1b2b0ec1a11a3973d2845b42413d9767
+2 data/number.txt 62f9457511f879886bb7728c986fe10b0ece6bcb
+3 data/number.txt 7813681f5b41c028345ca62a2be376bae70b7f61
 ```
 
-The entry for `data/letter.txt` at stage `0` is still there.  The entry for `data/number.txt` at stage `0` is gone.  There are three new entries in its place.  The entry for stage `1` has the hash of the `data/number.txt` content from the base commit.  The entry for stage `2` has the hash of the `data/number.txt` content from the receiver commit.  The entry for stage `3` has the hash of the `data/number.txt` content from the giver commit.  The presence of these three entries tells Git that `data/number.txt` is in conflict.
+The entry for `data/letter.txt` at stage `0` is the same as it was before the merge.  The entry for `data/number.txt` at stage `0` is gone.  There are three new entries in its place.  The entry for stage `1` has the hash of the `data/number.txt` content from the base commit.  The entry for stage `2` has the hash of the `data/number.txt` content from the receiver commit.  The entry for stage `3` has the hash of the `data/number.txt` content from the giver commit.  The presence of these three entries tells Git that `data/number.txt` is in conflict.
 
-Fourth, the changes indicated by the entries in the diff are applied to the working copy.  For a conflict, Git writes both versions to the working copy file.  The content of `data/number.txt` is set to:
+Sixth, the changes indicated by the entries in the diff are applied to the working copy.  For a conflict, Git writes both versions to the file in the working copy.  The content of `data/number.txt` is set to:
 
 ```
 <<<<<<< HEAD
@@ -564,11 +574,11 @@ The merge pauses here.
 ~/alpha $ git add data/number.txt
 ```
 
-The user resolves the conflict by setting the content of `data/number.txt` to `13`.  They add the file to the index.  Adding a conflicted file tells Git that the conflict is resolved.  Git removes the `data/number.txt` entries for stages `1`, `2` and `3` from the index and adds an entry for stage `0`.  The index now contains:
+The user integrates the content of the two conflicting versions by setting the content of `data/number.txt` to `13`.  They add the file to the index.  Adding a conflicted file tells Git that the conflict is resolved.  Git removes the `data/number.txt` entries for stages `1`, `2` and `3` from the index.  It adds a blob containing the `13`, the new content of `data/number.txt`.  It adds adds an entry for `data/number.txt` at stage `0` with the hash of the new blob.  The index now reads:
 
 ```
-0 data/letter.txt hhh
-0 data/number.txt hhh
+0 data/letter.txt 63d8dbd40c23542e740659a7168a0ce3138ea748
+0 data/number.txt ca7bf83ac53a27a2a914bed25e1a07478dd8ef47
 ```
 
 ```bash
@@ -576,11 +586,17 @@ The user resolves the conflict by setting the content of `data/number.txt` to `1
           [master 28118a0] b13
 ```
 
-The user commits.  Git sees `alpha/.git/MERGE_HEAD` in the repo, which tells it that a merge is in progress.  It checks the index and finds there are no conflicts.  It creates a new commit to record the content of the resolved merge.  It deletes the file at `alpha/.git/MERGE_HEAD`.  This completes the merge.
+Seventh, the user commits.  Git sees `alpha/.git/MERGE_HEAD` in the repository, which tells it that a merge is in progress.  It checks the index and finds there are no conflicts.  It creates a new commit, `b13`, to record the content of the resolved merge.  It deletes the file at `alpha/.git/MERGE_HEAD`.  This completes the merge.
 
-[graph showing the new merge commit]
+Eighth, Git points the current branch, `master`, at the new commit.
+
+file://images/21-b13onmaster.png
 
 ## Remove a file
+
+A diagram of the Git graph that includes the trees and blobs for the current commit, the working copy and index:
+
+file://images/22-b13withobjectswcindex.png
 
 ```bash
 ~/alpha $ git rm data/letter.txt
@@ -593,26 +609,45 @@ First, `data/letter.txt` is deleted from the working copy.
 
 Second, the entry for `data/letter.txt` is deleted from the index.
 
+file://images/23-b13letterremoved.png
+
 ```bash
-~/alpha $ git commit -m '14'
-          [master 836b25c] 14
+~/alpha $ git commit -m '13'
+          [master 836b25c] 13
 ```
 
 The user commits.  As part of the commit, as always, Git builds a tree graph that represents the content of the index.  Because `data/letter.txt` is not in the index, it is not included in the tree graph.
+
+file://images/24-13.png
 
 ## Copy a repository
 
 ```bash
 ~/alpha $ cd ..
-~       $ cp -r alpha bravo
+      ~ $ cp -r alpha bravo
 ```
 
-The user makes a copy of the entire `alpha/` repository to the `bravo/` directory.
+The user copies the contents of the `alpha/` repository to the `bravo/` directory.  This produces the following directory structure:
+
+```
+alpha
+└── data
+    └── letter.txt
+    └── number.txt
+bravo
+└── data
+    └── letter.txt
+    └── number.txt
+```
+
+There is now another Git graph:
+
+file://images/25-13copyalphatobravo.png
 
 ## Link a repository ta another repository
 
 ```bash
-~       $ cd alpha
+      ~ $ cd alpha
 ~/alpha $ git remote add bravo ../bravo
 ```
 
@@ -629,13 +664,15 @@ These lines specify that there is a remote repository called `bravo` in the dire
 
 ```bash
 ~/alpha $ cd ../bravo
-~/bravo $ printf '15' > data/number.txt
+~/bravo $ printf '14' > data/number.txt
 ~/bravo $ git add data/number.txt
-~/bravo $ git commit -m '15'
-          [master 6764cd8] 15
+~/bravo $ git commit -m '14'
+          [master 6764cd8] 14
 ```
 
-The user goes into the `bravo` repository.  They set the content of `data/number.txt` to `15` and commit the change to `master` on `bravo`.
+The user goes into the `bravo` repository.  They set the content of `data/number.txt` to `14` and commit the change to `master` on `bravo`.
+
+file://images/26-14onbravo.png
 
 ```bash
 ~/bravo $ cd ../alpha
@@ -645,23 +682,13 @@ The user goes into the `bravo` repository.  They set the content of `data/number
             * branch master -> FETCH_HEAD
 ```
 
-The user goes into the `alpha` repository.  They fetch `master` from `bravo` into `alpha`.  This takes four steps.
+The user goes into the `alpha` repository.  They fetch `master` from `bravo` into `alpha`.  This process has four steps.
 
-First, Git gets the hash of the commit that master is pointing to on `bravo`.  This is the hash of the `15` commit.
+First, Git gets the hash of the commit that master is pointing at on `bravo`.  This is the hash of the `14` commit.
 
-Second, Git makes a list of all the objects that the `15` commit depends on: the commit itself, the objects in its tree graph, the ancestor commits of the `15` commit and the objects in their tree graphs.  It copies all the objects in this list that `alpha` does not already have to `alpha/.git/objects/`.
+Second, Git makes a list of all the objects that the `14` commit depends on: the commit itself, the objects in its tree graph, the ancestor commits of the `14` commit and the objects in their tree graphs.  It copies all the objects that are in this list but that `alpha` does not have to `alpha/.git/objects/`.
 
-Third, the contents of the concrete ref file at `alpha/.git/refs/remotes/bravo/master` is set to the hash of the `15` commit.
-
-***
-
-[graph showing bravo/master pointing at `15` commit (somehow show the fact that the commit is not part of the local history]
-
-Fifteen.  Objects can be copied.  This means that parts of the content and history of a project can be copied from one repository to another.
-
-Sixteen.  A repository can store remote branch refs like `alpha/.git/refs/remotes/bravo/master`.  This means a repository can have a record of the state of a branch on a remote repository.  Though correct the last time it was fetched, if the remote repository changes, it might go out of date.
-
-***
+Third, the contents of the concrete ref file at `alpha/.git/refs/remotes/bravo/master` is set to the hash of the `14` commit.
 
 Fourth, the contents of `alpha/.git/FETCH_HEAD` is set to:
 
@@ -669,7 +696,13 @@ Fourth, the contents of `alpha/.git/FETCH_HEAD` is set to:
 hhh	branch 'master' of ../bravo
 ```
 
-This indicates that the most recent fetch command fetched the `15` commit of `master` on `bravo`.
+This indicates that the most recent fetch command fetched the `14` commit of `master` from `bravo`.
+
+file://images/27-14fetchedtoalpha.png
+
+Graph property: objects can be copied.  Git behavior: history can be shared between repositories.
+
+Graph property: a repository can store remote branch refs like `alpha/.git/refs/remotes/bravo/master`.  Git behavior: a repository can have a record of the state of a branch on a remote repository.  Though correct at the time it is fetched, it will go out of date if the remote branch changes.
 
 ## Merge FETCH_HEAD
 
@@ -679,7 +712,9 @@ This indicates that the most recent fetch command fetched the `15` commit of `ma
           Fast-forward
 ```
 
-The user merges `FETCH_HEAD`.  `FETCH_HEAD` is just another ref.  It resolves to the `15` commit, the giver.  `HEAD` points at the `14` commit, the receiver.  Git does a fast-forward merge and points `master` at the `15` commit.
+The user merges `FETCH_HEAD`.  `FETCH_HEAD` is just another ref.  It resolves to the `14` commit, the giver.  `HEAD` points at the `13` commit, the receiver.  Git does a fast-forward merge and points `master` at the `14` commit.
+
+file://images/28-14mergedtoalpha.png
 
 ## Pull a branch from a remote
 
@@ -694,25 +729,23 @@ The user pulls `master` from `bravo` into `alpha`.  Pulling is shorthand for fet
 
 ```bash
 ~/alpha $ cd ..
-~       $ git clone alpha charlie
+      ~ $ git clone alpha charlie
           Cloning into 'charlie'
 ```
 
-The user moves into the directory above.  They clone `alpha` to `charlie`.  Cloning has similar results to the `cp` the user did to produce the `bravo` repository.
-
-Git creates a new directory called `charlie`.  After that, it inits `charlie` as a Git repo, adds `alpha` as a remote called `origin`, fetches `origin` and merges `FETCH_HEAD`.
+The user moves into the directory above.  They clone `alpha` to `charlie`.  Cloning to `charlie` has similar results to the `cp` the user did to produce the `bravo` repository.  Git creates a new directory called `charlie`.  After that, it inits `charlie` as a Git repo, adds `alpha` as a remote called `origin`, fetches `origin` and merges `FETCH_HEAD`.
 
 ## Push a branch to a checked out branch on a remote
 
 ```bash
-~       $ cd alpha
-~/alpha $ printf '16' > data/number.txt
+      ~ $ cd alpha
+~/alpha $ printf '15' > data/number.txt
 ~/alpha $ git add data/number.txt
-~/alpha $ git commit -m '16'
-          [master 8b35db5] 16
+~/alpha $ git commit -m '15'
+          [master 8b35db5] 15
 ```
 
-The user goes back into the `alpha` repository.  They set the content of `data/number.txt` to `16` and commit the change to `master` on `alpha`.
+The user goes back into the `alpha` repository.  They set the content of `data/number.txt` to `15` and commit the change to `master` on `alpha`.
 
 ```bash
 ~/alpha $ git remote add charlie ../charlie
@@ -730,9 +763,9 @@ They set up `charlie` as a remote repository on `alpha`.
 
 They push `master` to `charlie`.
 
-All the objects required for the `16` commit on the `master` branch are copied to `charlie`.
+All the objects required for the `15` commit on the `master` branch are copied to `charlie`.
 
-At this point, the push process stops.  Git, as ever, tells the user what went wrong.  It refuses to push to a branch that is checked out on the remote.  This makes sense.  A push will update the current commit and index of the remote.  If someone is editing the working copy on the remote, this will be confusing.
+At this point, the push process stops.  Git, as ever, tells the user what went wrong.  It refuses to push to a branch that is checked out on the remote.  This makes sense.  A push will update the current commit and index of the remote.  This will cause confusion if someone is editing the working copy on the remote.
 
 At this point, the user could make a new branch and push that branch to `charlie`.  But, really, they want a repository that they can push to whenever they want.  They want a central repository that they can push to and pull from, but that no one commits to directly.  They want something like a GitHub remote.  They want a bare repository.
 
@@ -740,11 +773,11 @@ At this point, the user could make a new branch and push that branch to `charlie
 
 ```bash
 ~/alpha $ cd ..
-~       $ git clone alpha delta --bare
+      ~ $ git clone alpha delta --bare
           Cloning into bare repository 'delta'
 ```
 
-The user clones `delta` as a bare repository.  This is an ordinary clone with two differences.  The `config` file indicates the repository is bare.  And the contents of the `.git` directory are in the top of the repository:
+The user clones `delta` as a bare repository.  This is an ordinary clone with two differences.  The `config` file indicates the repository is bare.  And the files that are normally stored in the `.git` directory are stored in the top of the repository:
 
 ```
 delta
@@ -754,18 +787,29 @@ delta
 └── refs
 ```
 
+Here are the `alpha` and `delta` graphs:
+
+file://images/29-15alphabareclonedtodelta.png
+
 ## Push a branch to a bare repository
 
 ```bash
-~       $ cd alpha
+      ~ $ cd alpha
 ~/alpha $ git remote add delta ../delta
-~/alpha $ printf '17' > data/number.txt
-~/alpha $ git add data/number.txt
-~/alpha $ git commit -m '17'
-          [master 02d1bb2] 17
 ```
 
-The user goes back into the `alpha` repository.  They set up `delta` as a remote repository on `alpha`.  They set the content of `data/number.txt` to `17` and commit the change to `master` on `alpha`.
+The user goes back into the `alpha` repository.  They set up `delta` as a remote repository on `alpha`.
+
+```bash
+~/alpha $ printf '16' > data/number.txt
+~/alpha $ git add data/number.txt
+~/alpha $ git commit -m '16'
+          [master 02d1bb2] 16
+```
+
+They set the content of `data/number.txt` to `16` and commit the change to `master` on `alpha`.
+
+file://images/30-16onalpha.png
 
 ```bash
 ~/alpha $ git push delta master
@@ -776,11 +820,13 @@ The user goes back into the `alpha` repository.  They set up `delta` as a remote
 
 They push `master` to `delta`.  Pushing has three steps.
 
-First, all the objects required for the `8` commit on the `master` branch are copied from `alpha/.git/objects/` to `delta/.git/objects/`.
+First, all the objects required for the `16` commit on the `master` branch are copied from `alpha/.git/objects/` to `delta/.git/objects/`.
 
-Second, `refs/heads/master` is updated on `delta` to point at the `17` commit.
+Second, `refs/heads/master` is updated on `delta` to point at the `16` commit.
 
-Third, `.git/refs/heads/remotes/delta/master` is updated to point at the `17` commit.  `alpha` has to update its own record of the state of `delta`.
+Third, `alpha/.git/refs/remotes/delta/master` is set to point at the `16` commit.  This means `alpha` has an up to date record of the state of `delta`.
+
+file://images/31-16pushedtodelta.png
 
 ## Summary
 
@@ -796,4 +842,8 @@ todo
 - go through all commands, check they work
 - find a way to put file names on same line as top border of code samples
 - explain ghost boxes when start using them in diagrams
-- do diagram that shows commit, head, master etc vs their locations in repo - maybe after 15 commit cause then have FETCH_HEAD and a remote ref
+- do diagram that shows commit, head, master etc vs their locations in repo - maybe after 14 commit cause then have FETCH_HEAD and a remote ref
+- delete all hhh
+- remove all references to 'repo'
+- put dashes in image filenames
+- content vs contents
