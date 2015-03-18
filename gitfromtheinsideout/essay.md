@@ -63,7 +63,7 @@ First, it creates a new blob file in the directory at `alpha/.git/objects/`.
 
 This file contains the compressed content of the `data/letter.txt` file.
 
-The name of this file is derived by hashing the file's content.  Hashing a piece of text means running a program on it that turns it into a smaller* piece of text that uniquely* identifies the original.  For example, Git hashes `a` to `5e40c0877058c504203932e5136051cf3cd3519b`.  This hash is a short, unique identifier for the current content of `number.txt`.  The first two characters are used as the name of a directory inside `alpha/.git/objects/`: `5e`.  The rest of the hash is used as the name of the file that holds the content of added file: `40c0877058c504203932e5136051cf3cd3519b`*.
+The name of this file is derived by hashing the file's content.  Hashing a piece of text means running a program on it that turns it into a smaller[^1] piece of text that uniquely[^2] identifies the original.  For example, Git hashes `a` to `5e40c0877058c504203932e5136051cf3cd3519b`.  This hash is a short, unique identifier for the current content of `number.txt`.  The first two characters are used as the name of a directory inside `alpha/.git/objects/`: `5e`.  The rest of the hash is used as the name of the file that holds the content of added file: `40c0877058c504203932e5136051cf3cd3519b`.
 
 Notice how just adding a file to Git saves its content to the objects directory.  If the user were to delete the `data/letter.txt` file the working copy, its content would still be safe inside Git.
 
@@ -261,7 +261,7 @@ Graph property: the nodes in the graph are all text files.  Git behavior: the co
 
 Graph property: refs are entry points to one part of the commit history or another.  Git behavior: commits can be given meaningful names.  The user uses concrete refs like `fix-for-bug-376` to organise their work into lineages that are meaningful to their project.  Symbolic refs like `HEAD`, `MERGE_HEAD` and `FETCH_HEAD` identify points in the commit history that are meaningful to Git.  These support commands that can manipulate the history: committing, merging, fetching.
 
-Graph property: the nodes in the `objects/` directory are immutable.  Git behavior: content can be edited, not deleted.  Every piece of content ever added and every commit ever made is somewhere in the `objects` directory*[does garbage collect chuck out stuff?].
+Graph property: the nodes in the `objects/` directory are immutable.  Git behavior: content can be edited, not deleted.  Every piece of content ever added and every commit ever made is somewhere in the `objects` directory[^3].
 
 Graph property: refs are mutable.  Git behavior: the meaning of a ref can change.  Though the commit that `master` points at now might be the best version of a project, soon enough, it will be superceded be a newer and better commit.
 
@@ -269,11 +269,11 @@ Graph property: refs and the working copy are readily available, but unreference
 
 The working copy is the easiest point in history to recall because it is in the root of the repository.  Recalling it doesn't even require a Git command.  It is also the least permanent point in history.  The user can make a dozen versions of a file, but, unless they are added, Git won't record any of them.
 
-The commit that `HEAD` points is very easy to recall.  It is at the tip of the branch that is checked out.  To see its content, the user can just stash[*explain this] and then examine the working copy.  At the same time, `HEAD` is the most frequently changing ref.
+The commit that `HEAD` points is very easy to recall.  It is at the tip of the branch that is checked out.  To see its content, the user can just stash[^4] and then examine the working copy.  At the same time, `HEAD` is the most frequently changing ref.
 
 The commit that a concrete ref points at is easy to recall.  The user can simply check out that branch.  The tips of branches change less frequently that `HEAD`, but still frequently enough for them to be ephemeral.
 
-It is possible to recall a commit that is not pointed at by any ref.  The further back the user goes, the harder it will be for them to sort through the content and reassemble the meaning of a commit in their human brain.  But, the further back they go, the less likely it is that someone will have changed history since they last looked*[rebase].
+It is possible to recall a commit that is not pointed at by any ref.  The further back the user goes, the harder it will be for them to sort through the content and reassemble the meaning of a commit in their human brain.  But, the further back they go, the less likely it is that someone will have changed history since they last looked[^5].
 
 ## Check out a commit
 
@@ -856,3 +856,13 @@ Third, `alpha/.git/refs/remotes/delta/master` is set to point at the `16` commit
 Git is built on a graph.  Almost every Git command manipulates this graph.  To understand Git deeply, focus on the properties of this graph, not workflows or commands.
 
 To learn more about Git, investigate the `.git` directory.  It's not scary. Look inside.  Change the content of files and see what happens.  Create a commit by hand.  Try and see how badly you can mess up a repo.  Then repair it.
+
+[^1]: In this case, the hash is longer than the original content.  But, all pieces of content longer than the number of characters in a hash will be expressed more concisely than the original.
+
+[^2]: There is a chance that two different pieces of content will hash to the same value.  But this chance <a href="http://crypto.stackexchange.com/a/2584">is low</a>.
+
+[^3]: Content can be lost if the runs `git prune`.  This command deletes all objects that cannot be reached from a ref.
+
+[^4]: `git stash` stores all the differences between the working copy and the current commit in a safe place from which they can be retrieved later.
+
+[^5]: The `rebase` command can be used to add, edit and delete commits in the history.
