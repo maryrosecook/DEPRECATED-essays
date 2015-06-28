@@ -1,3 +1,7 @@
+Hi everyone. Thanks for visiting. This content is a draft. The final version of the essay (complete with working images) is here: https://codewords.recurse.com/issues/two/git-from-the-inside-out
+
+---------------------------------------------
+
 # Git from the inside out
 
 This essay shows you how Git works.  It focuses on the graph that underpins Git and how the properties of this graph dictate the behaviors of Git.  This focus on fundamentals lets you build your mental model on the truth, rather than on hypotheses constructed from evidence gathered while experimenting with the API.  This truer model gives you a better understanding of what Git has done, what it is doing and what it will do.
