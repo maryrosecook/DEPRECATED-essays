@@ -63,7 +63,7 @@ First, it creates a new blob file in the directory at `alpha/.git/objects/`.
 
 This file contains the compressed content of the `data/letter.txt` file.
 
-The name of this file is derived by hashing the file's content.  Hashing a piece of text means running a program on it that turns it into a smaller[^1] piece of text that uniquely[^2] identifies the original.  For example, Git hashes `a` to `5e40c0877058c504203932e5136051cf3cd3519b`.  This hash is a short, unique identifier for the current content of `number.txt`.  The first two characters are used as the name of a directory inside `alpha/.git/objects/`: `5e`.  The rest of the hash is used as the name of the file that holds the content of added file: `40c0877058c504203932e5136051cf3cd3519b`.
+The name of this file is derived by hashing the file's content.  Hashing a piece of text means running a program on it that turns it into a smaller[^1] piece of text that uniquely[^2] identifies the original.  For example, Git hashes `a` to `5e40c0877058c504203932e5136051cf3cd3519b`.  This hash is a short, unique identifier for the current content of `letter.txt`.  The first two characters are used as the name of a directory inside `alpha/.git/objects/`: `5e`.  The rest of the hash is used as the name of the file that holds the content of added file: `40c0877058c504203932e5136051cf3cd3519b`.
 
 Notice how just adding a file to Git saves its content to the objects directory.  If the user were to delete the `data/letter.txt` file the working copy, its content would still be safe inside Git.
 
